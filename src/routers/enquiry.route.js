@@ -1,12 +1,29 @@
-const express = require('express')
-const Enquiry = require('../models/enquiry.model')
-const auth = require('../middleware/auth')
+const express = require('express');
+const Enquiry = require('../models/enquiry.model');
+const auth = require('../middleware/auth');
+const sendMail = require('../email/mail');
 const router = new express.Router()
 
 router.post('/sendEnquiry', async (req, res) => {
     const enquiry = new Enquiry(req.body)
     try {
         await enquiry.save();
+        
+        const mail = {
+            to: process.env.ENQUIRY_EMAIL,
+            from: process.env.REPLY_EMAIL,
+            subject: `Enquiry from ${enquiry.email}`,
+            text: '',
+            html: `
+                <strong>Name : </strong>${enquiry.name}<br>
+                <strong>Phone : </strong>${enquiry.phone}<br>
+                <strong><em>E-</em>Mail : </strong><a href='mailto:${enquiry.email}'>${enquiry.email}</a><br>
+                <strong>Message : </strong>${enquiry.message}<br>
+            `
+        };
+
+        await sendMail(mail)
+
         const data = {
             success : true
         }
@@ -90,6 +107,16 @@ router.post('/replyEnquiry', auth, async (req, res) => {
         }
 
         // Send reply to Mail
+        
+        const mail = {
+            to: enquiry.email,
+            from: process.env.REPLY_EMAIL,
+            subject: curReply.subject,
+            text: curReply.message,
+            html: curReply.message
+        };
+
+        await sendMail(mail)
 
         reply.push(curReply);
 

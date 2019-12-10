@@ -4,9 +4,9 @@ const Student = require('../models/student.model')
 // const faculty = require('../models/faculty.model')
 const jwt = require('jsonwebtoken')
 const auth = require('../middleware/auth')
+const sendMail = require("../email/mail");
 const router = new express.Router()
 
-const sendMail = require("../email/mail");
 
 router.post('/newUser', async (req, res) => {
     const user = new User(req.body)
@@ -102,10 +102,10 @@ router.post('/forgotPassword', async (req, res) => {
 
         const mail = {
             to: user.email,
-            from: 'shubhammore1796@gmail.com',
+            from: process.env.REPLY_EMAIL,
             subject: 'Reset Password Link',
             text: link,
-            html: link
+            html: `<a href='${link}'>${link}</a>`
         };
 
         await sendMail(mail)
