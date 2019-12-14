@@ -52,14 +52,14 @@ router.post('/newMedia', auth, multer({ storage: storage }).single("media"), asy
                 
                 if(upload_res) {
                     const video_data = {
-                        media_name : upload_res.key.split('/')[1],
+                        media_name : upload_res.Key.split('/')[1],
                         secure_url : upload_res.Location,
-                        public_id : upload_res.key,
+                        public_id : upload_res.Key,
                         created_at : Date.now()
                     }
                     video = video_data;
                 } else {
-                    throw new Error("No response from cloudinary");
+                    throw new Error("No response from aws");
                 }
             }
             catch(e) {
