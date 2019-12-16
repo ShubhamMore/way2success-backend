@@ -5,6 +5,8 @@ var cors = require('cors');
 
 require('./database/mongoose');
 
+const birthDayWishes = require("./functions/birthDayWishes")
+
 const aboutRouter = require('./routers/about.route');
 const attendanceRouter = require('./routers/attendance.route');
 const branchRouter = require('./routers/branch.route');
@@ -84,5 +86,7 @@ app.use((error, req, res, next) => {
       }
   });
 });
+
+birthDayWishes();
 
 module.exports = app;
