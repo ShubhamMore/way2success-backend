@@ -1,8 +1,7 @@
 const express = require('express')
-const fs = require('fs');
-const path = require('path');
 const Image = require('../models/image.model')
 const ImageCategory = require('../models/image-category.model')
+const awsRemoveFile = require('../uploads/awsRemoveFile');
 const auth = require('../middleware/auth')
 const router = new express.Router()
   
@@ -43,10 +42,8 @@ router.post('/deleteCategory', auth, async (req, res) => {
 
         const n = images.length;
         for (let i = 0 ; i < n; i++) {
-            const imageToDelete = images[i].image.split('images/')[1];
-            fs.unlink(path.join(__dirname,"../../")+'images/'+imageToDelete, (err) => {
-                if (err) throw err;
-            });
+            const imageToDelete = images[i].public_id;
+            await awsRemoveFile(imageToDelete);
         }
         res.status(200).send({success : true});
     }

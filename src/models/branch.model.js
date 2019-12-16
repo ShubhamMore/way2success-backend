@@ -17,6 +17,10 @@ const branchSchema = new mongoose.Schema({
     phone:{
         type:String,
         require:true
+    },
+    status: {
+        type: String,
+        default: '1'
     }
 })
 

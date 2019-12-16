@@ -37,7 +37,11 @@ const courseSchema = new mongoose.Schema({
                 }
             ],
         }
-    ]
+    ],
+    status: {
+        type: String,
+        default: '1'
+    }
 })
 
 courseSchema.virtual('students', {

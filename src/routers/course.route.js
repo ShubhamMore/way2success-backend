@@ -73,8 +73,8 @@ router.post('/getBranchesAndCourses', auth, async (req, res) => {
 
 router.post('/getBranchesAndCoursesForContent', async (req, res) => {
     try {
-        const branches = await Branch.find()
-        const courses = await Course.find()
+        const branches = await Branch.find({status: '1'})
+        const courses = await Course.find({status: '1'})
         
         let branch = new Array();
         
@@ -152,6 +152,32 @@ router.post('/editCourse', auth, async (req, res) => {
         const course = await Course.findByIdAndUpdate(req.body._id, req.body);
         if(!course) {
             throw new Error("Course Updation Failed");
+        }
+        res.status(200).send({success : true});
+    }
+    catch(e) {
+        res.status(400).send(""+e);
+    }
+});
+
+router.post('/deactivateCourse', auth, async (req, res) => {
+    try {
+        const course = await Course.findByIdAndUpdate(req.body._id, {status: '0'});
+        if(!course) {
+            throw new Error("Course Deactivation Failed");
+        }
+        res.status(200).send({success : true});
+    }
+    catch(e) {
+        res.status(400).send(""+e);
+    }
+});
+
+router.post('/activateCourse', auth, async (req, res) => {
+    try {
+        const course = await Course.findByIdAndUpdate(req.body._id, {status: '1'});
+        if(!course) {
+            throw new Error("Course Activation Failed");
         }
         res.status(200).send({success : true});
     }

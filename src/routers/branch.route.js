@@ -77,4 +77,30 @@ router.post('/editBranch', auth, async (req, res) => {
     }
 });
 
+router.post('/deactivateBranch', auth, async (req, res) => {
+    try {
+        const branch = await Branch.findByIdAndUpdate(req.body._id, {status: '0'});
+        if(!branch) {
+            throw new Error("Branch Deactivation Failed");
+        }
+        res.status(200).send({success : true});
+    }
+    catch(e) {
+        res.status(400).send(""+e);
+    }
+});
+
+router.post('/activateBranch', auth, async (req, res) => {
+    try {
+        const branch = await Branch.findByIdAndUpdate(req.body._id, {status: '1'});
+        if(!branch) {
+            throw new Error("Branch Activation Failed");
+        }
+        res.status(200).send({success : true});
+    }
+    catch(e) {
+        res.status(400).send(""+e);
+    }
+});
+
 module.exports = router

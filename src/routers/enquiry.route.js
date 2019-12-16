@@ -2,6 +2,7 @@ const express = require('express');
 const Enquiry = require('../models/enquiry.model');
 const auth = require('../middleware/auth');
 const sendMail = require('../email/mail');
+const sortArrayOfObjectsById = require('../functions/sortArrayOfObjectsById')
 const router = new express.Router()
 
 router.post('/sendEnquiry', async (req, res) => {
@@ -40,6 +41,7 @@ router.post('/getEnquiries', auth, async (req, res) => {
         if(!enquiry) {
             throw new Error("No Enquiry Found");
         }
+        sortArrayOfObjectsById(enquiry, '_id');
         res.status(200).send(enquiry);
     }
     catch(e) {
