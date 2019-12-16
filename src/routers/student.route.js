@@ -9,6 +9,7 @@ const findSubjectNames = require("../functions/findSubjectNames")
 const findBranchName = require("../functions/findBranchName")
 const constructHistory = require("../functions/constructHistory")
 const mongoose = require("mongoose")
+const sendMail = require("../email/mail")
 const router = new express.Router()
 
 router.post('/newStudent', auth, async (req, res) => {
@@ -36,6 +37,23 @@ router.post('/newStudent', auth, async (req, res) => {
         };
         const student = new Student(newStudent);
         await student.save();
+
+        const mail = {
+            from: process.env.EMAIL,
+            to: student.email,
+            subject: "Your login details for way2success.education",
+            text: "",
+            hrml: `
+                <h2>Welcome to Way2Success <em>${student.name}</em></h2><br>
+                <p>Your Login Credentials are : </p><br>
+                <strong>Username : </strong> ${student.email}
+                <strong>password : </strong> ${student.phone}<br>
+                <p>Click the following link for login..</p>
+                <a href="http://www.way2success.education/#/login">http://www.way2success.education/</a>
+            `
+        }
+
+        await sendMail(mail);
 
         const newHistory = {
             student: student._id,
