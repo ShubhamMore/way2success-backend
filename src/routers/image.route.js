@@ -70,8 +70,8 @@ router.post('/newImages', auth, multer({ storage: storage }).array("image"), asy
         
             res.status(200).send({responce, upload_responce})
         } catch (e) {
-            const err = "Something bad happen, " + e;
-            res.status(400).send(err.replace('Error: ', ''));
+            let err = "" + e;
+            res.status(400).send(err.replace('Error: ', ''))
         }
     }
     else {
@@ -87,7 +87,8 @@ router.post('/getImages', async (req, res) => {
         res.status(200).send(images);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -98,11 +99,11 @@ router.post('/getImagesByCategory', auth, async (req, res) => {
         res.status(200).send(images);
     }
     catch(e) {
-        let error = ""+e;
+        let err = ""+e;
         if(e.name === "CastError") {
-            error = "No Image Found";
+            err = "No Image Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -119,8 +120,8 @@ router.post('/deleteImage', auth, async (req, res) => {
         const responce = await awsRemoveFile(public_id);
         res.status(200).send(responce);
     } catch (e) {
-        const err = "Something bad happen, " + e;
-        res.status(400).send(err.replace('Error: ', ''));
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

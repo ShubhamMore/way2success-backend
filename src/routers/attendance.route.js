@@ -49,7 +49,8 @@ router.post('/getStudentsForAttendance', auth, async (req, res) => {
         res.status(200).send(students);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

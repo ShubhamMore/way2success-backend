@@ -22,8 +22,8 @@ router.post('/newReceipt', auth, async (req, res, next) => {
         await budget.save();
         res.status(201).send({_id: receipt._id});
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -32,8 +32,8 @@ router.post('/getAllReceipts', auth, async (req, res, next) => {
         const receipt = await Receipt.find({student: req.body.student});
         res.status(200).send(receipt);
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -51,8 +51,8 @@ router.post('/getReceipt', auth, async (req, res, next) => {
 
         res.status(200).send(receipt);
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 router.post('/deleteReceipt', auth, async (req, res, next) => {
@@ -61,8 +61,8 @@ router.post('/deleteReceipt', auth, async (req, res, next) => {
         await Budget.findOneAndDelete({receipt: receipt._id});
         res.status(200).send({success: true});
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

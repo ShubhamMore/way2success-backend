@@ -17,8 +17,8 @@ router.post('/saveAbout', auth, async (req, res) => {
         }
         res.status(201).send(data)
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -28,11 +28,11 @@ router.post('/getAbout', async (req, res) => {
         res.status(200).send(about[0]);
     }
     catch(e) {
-        let error = ""+e;
+        let err = "" + e;
         if(e.name === "CastError") {
-            error = "No About Found";
+            err = "No About Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 

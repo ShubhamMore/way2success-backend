@@ -20,8 +20,8 @@ router.post('/saveContact', auth, async (req, res) => {
         }
         res.status(201).send(data)
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -31,7 +31,8 @@ router.post('/getContact', async (req, res) => {
         res.status(200).send(contact[0]);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

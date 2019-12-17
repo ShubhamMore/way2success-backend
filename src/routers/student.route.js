@@ -78,8 +78,8 @@ router.post('/newStudent', auth, async (req, res) => {
         };
         res.status(201).send(data)
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -107,7 +107,8 @@ router.post('/getStudents', auth, async (req, res) => {
         res.status(200).send(students);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -141,11 +142,11 @@ router.post('/getStudent', auth, async (req, res) => {
         res.status(200).send({student, studentMetaData});
     }
     catch(e) {
-        let error = ""+e;
+        let err = ""+e;
         if(e.name === "CastError") {
-            error = "No course Found";
+            err = "No course Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -178,11 +179,11 @@ router.post('/getStudentForPayment', auth, async (req, res) => {
         res.status(200).send({student, studentMetaData});
     }
     catch(e) {
-        let error = ""+e;
+        let err = ""+e;
         if(e.name === "CastError") {
-            error = "No course Found";
+            err = "No course Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -203,11 +204,11 @@ router.post('/getStudentHistory', auth, async (req, res) => {
         res.status(200).send({branch, history: studentHistory});
     }
     catch(e) {
-        let error = ""+e;
+        let err = ""+e;
         if(e.name === "CastError") {
-            error = "No course Found";
+            err = "No course Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -233,11 +234,8 @@ router.post('/getStudentForEditing', auth, async (req, res) => {
         res.status(200).send({student, courses, branches});
     }
     catch(e) {
-        let error = ""+e;
-        if(e.name === "CastError") {
-            error = "No course Found";
-        }
-        res.status(400).send(error);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -256,11 +254,8 @@ router.post('/getStudentDataForMedia', auth, async (req, res) => {
         res.status(200).send(studentData);
     }
     catch(e) {
-        let error = ""+e;
-        if(e.name === "CastError") {
-            error = "No course Found";
-        }
-        res.status(400).send(error);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -274,11 +269,8 @@ router.post('/getStudentSubjects', auth, async (req, res) => {
         res.status(200).send(subjects);
     }
     catch(e) {
-        let error = ""+e;
-        if(e.name === "CastError") {
-            error = "No course Found";
-        }
-        res.status(400).send(error);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -439,7 +431,8 @@ router.post('/editStudent', auth, async (req, res) => {
         res.status(200).send({succes : true});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

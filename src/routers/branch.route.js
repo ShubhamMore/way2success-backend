@@ -12,8 +12,8 @@ router.post('/newBranch', auth, async (req, res) => {
         }
         res.status(201).send(data)
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -24,7 +24,8 @@ router.post('/getBranches', auth, async (req, res) => {
         res.status(200).send(branches);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -38,11 +39,11 @@ router.post('/getBranch', auth, async (req, res) => {
         res.status(200).send(branch);
     }
     catch(e) {
-        let error = ""+e;
+        let err = "" + e;
         if(e.name === "CastError") {
-            error = "No Branch Found";
+            err = "No Branch Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -56,11 +57,11 @@ router.post('/getBranchForEditing', auth, async (req, res) => {
         res.status(200).send(branch);
     }
     catch(e) {
-        let error = ""+e;
+        let err = "" + e;
         if(e.name === "CastError") {
-            error = "No Branch Found";
+            err = "No Branch Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -73,7 +74,8 @@ router.post('/editBranch', auth, async (req, res) => {
         res.status(200).send({success : true});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -86,7 +88,8 @@ router.post('/deactivateBranch', auth, async (req, res) => {
         res.status(200).send({success : true});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -99,7 +102,8 @@ router.post('/activateBranch', auth, async (req, res) => {
         res.status(200).send({success : true});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

@@ -13,8 +13,8 @@ router.post('/saveBudget', auth, async (req, res) => {
         }
         res.status(201).send(data)
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -59,8 +59,8 @@ router.post('/getBudget', auth, async (req, res) => {
         res.status(201).send({income, expence});
 
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -82,8 +82,8 @@ router.post('/getBudgetSummery', auth, async (req, res) => {
 
         res.status(201).send(statement);
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -98,8 +98,8 @@ router.post('/deleteBudget', auth, async (req, res) => {
         res.status(201).send({success: true});
 
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

@@ -40,7 +40,8 @@ router.post('/getStudentsForExam', auth, async (req, res) => {
         res.status(200).send(students);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -54,7 +55,8 @@ router.post('/saveExam', auth, async (req, res) => {
 
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -68,7 +70,8 @@ router.post('/getExams', auth, async (req, res) => {
 
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -135,7 +138,8 @@ router.post('/getExam', auth, async (req, res) => {
         res.status(200).send({exam, examMetaData});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -151,7 +155,8 @@ router.post('/editExam', auth, async (req, res) => {
 
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -167,7 +172,8 @@ router.post('/deleteExam', auth, async (req, res) => {
 
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 

@@ -83,8 +83,8 @@ router.post('/newMedia', auth, multer({ storage: storage }).single("media"), asy
             throw new Error("No Media File Detected")
         } 
     } catch (e) {
-        let err = "Something bad happend, " + e;
-        res.status(400).send(err.replace('Error: ', ''));        
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))     
     }
 });
 
@@ -97,7 +97,8 @@ router.post('/getAllMedia', auth, async (req, res) => {
         res.status(200).send(mediaes);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -111,11 +112,11 @@ router.post('/getMediaForStudent', auth, async (req, res) => {
         res.status(200).send(media);
     }
     catch(e) {
-        let error = "" + e;
+        let err = "" + e;
         if(e.name === "CastError") {
-            error = "No media Found";
+            err = "No media Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -128,11 +129,11 @@ router.post('/getMedia', auth, async (req, res) => {
         res.status(200).send(media);
     }
     catch(e) {
-        let error = ""+e;
+        let err = ""+e;
         if(e.name === "CastError") {
-            error = "No media Found";
+            err = "No media Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -141,7 +142,7 @@ router.post('/getMediaforEditing', auth, async (req, res) => {
         const branches = await Branch.find();
 
         if(branches.length < 1) {
-            throw new Error("No Course Found");
+            throw new Error("No Branch Found");
         }
 
         const courses = await Course.find();
@@ -157,11 +158,11 @@ router.post('/getMediaforEditing', auth, async (req, res) => {
         res.status(200).send({media, branches, courses});
     }
     catch(e) {
-        let error = ""+e;
+        let err = ""+e;
         if(e.name === "CastError") {
-            error = "No media Found";
+            err = "No media Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -174,11 +175,11 @@ router.post('/editMedia', auth, async (req, res) => {
         res.status(200).send({success: true});
     }
     catch(e) {
-        let error = ""+e;
+        let err = ""+e;
         if(e.name === "CastError") {
-            error = "No media Found";
+            err = "No media Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -194,11 +195,11 @@ router.post('/deleteMedia', auth, async (req, res) => {
         res.status(200).send({success : true});
     }
     catch(e) {
-        let error = ""+e;
+        let err = ""+e;
         if(e.name === "CastError") {
-            error = "No media Found";
+            err = "No media Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

@@ -37,8 +37,8 @@ router.post('/getDashboardData', auth, async (req, res) => {
         res.status(200).send(dashbosrdData);
 
     } catch (e) {
-        let err = "Something bad happend" + e;
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

@@ -15,8 +15,8 @@ router.post('/newCategory', auth, async (req, res, next) => {
         }
         res.status(201).send(data)
     } catch (e) {
-        let err = "Something bad happend " + e;
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 }); 
 
@@ -27,7 +27,8 @@ router.post('/getImageCategories', async (req, res) => {
         res.status(200).send(categories);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -48,8 +49,8 @@ router.post('/deleteCategory', auth, async (req, res) => {
         res.status(200).send({success : true});
     }
     catch(e) {
-        let error = ""+e;
-        res.status(400).send(error);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

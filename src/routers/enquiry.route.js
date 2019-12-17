@@ -30,8 +30,8 @@ router.post('/sendEnquiry', async (req, res) => {
         }
         res.status(201).send(data)
     } catch (e) {
-        let err = "Something bad happend";
-        res.status(400).send(err)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -45,7 +45,8 @@ router.post('/getEnquiries', auth, async (req, res) => {
         res.status(200).send(enquiry);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -59,11 +60,11 @@ router.post('/getEnquiry', auth, async (req, res) => {
         res.status(200).send(enquiry);
     }
     catch(e) {
-        let error = ""+e;
+        let err = ""+e;
         if(e.name === "CastError") {
-            error = "No Enquiry Found";
+            err = "No Enquiry Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -77,7 +78,8 @@ router.post('/unseenEnquiries', auth, async (req, res) => {
         res.status(200).send({enquiries: enquiry.length});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -90,7 +92,8 @@ router.post('/markEnquiryAsSeen', auth, async (req, res) => {
         res.status(200).send({success : true});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -108,8 +111,6 @@ router.post('/replyEnquiry', auth, async (req, res) => {
             date: req.body.date
         }
 
-        // Send reply to Mail
-        
         const mail = {
             to: enquiry.email,
             from: process.env.REPLY_EMAIL,
@@ -129,7 +130,8 @@ router.post('/replyEnquiry', auth, async (req, res) => {
         res.status(200).send({success : true});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 

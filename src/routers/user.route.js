@@ -39,11 +39,11 @@ router.post('/checkUser', async (req, res) => {
         }
         res.status(201).send({exist});
     } catch (e) {
-        let err = "Something bad happend" + e;
+        let err = "" + e;
         if(e.code == 11000) {
             err = "User alredy register, Please login";
         }
-        res.status(400).send(err)
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -72,7 +72,7 @@ router.post('/login', async (req, res) => {
         
         res.send(data)
     } catch (e) {
-        let err = ""+e;
+        let err = "" + e;
         res.status(400).send(err.replace('Error: ', ''))
     }
 });
@@ -81,7 +81,7 @@ router.post('/autoLogin', auth, async (req, res) => {
     try {
         res.send({authenticated: true})
     } catch (e) {
-        let err = ""+e;
+        let err = "" + e;
         res.status(400).send(err.replace('Error: ', ''))
     }
 });
@@ -92,9 +92,8 @@ router.post('/forgotPassword', async (req, res) => {
         const user = await User.findOne({ email: req.body.email })
 
         if(!user) {
-            throw new Error('No such user Found..');
+            throw new Error('No user Found..');
         }
-        
         
         const token = await user.generateAuthToken();
         
@@ -113,7 +112,8 @@ router.post('/forgotPassword', async (req, res) => {
         res.status(200).send({data: "success"});
 
     } catch (e) {
-        res.status(400).send("No such user found");
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -124,7 +124,7 @@ router.post('/validateToken', async (req, res) => {
         const user = await User.findOne({ _id: decoded._id, 'tokens.token': req.body.token })
 
         if (!user) {
-            throw new Error("No such user found from validate password")
+            throw new Error("Invalid Token")
         }
 
         console.log(user)
@@ -135,7 +135,8 @@ router.post('/validateToken', async (req, res) => {
 
         res.status(200).send(data)
     } catch (e) {
-        res.status(401).send("No such user found")
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -146,7 +147,7 @@ router.post('/resetPassword', async (req, res) => {
         const user = await User.findOne({ _id: decoded._id, 'tokens.token': req.body.token });
 
         if (!user) {
-            throw new Error()
+            throw new Error("No user Found")
         }
 
         user.tokens = [];
@@ -156,7 +157,8 @@ router.post('/resetPassword', async (req, res) => {
 
         res.send()
     } catch (e) {
-        res.status(400).send("No User Found")
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -188,7 +190,8 @@ router.post('/logout', auth, async (req, res) => {
 
         res.send({success:true})
     } catch (e) {
-        res.status(500).send(e)
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -198,7 +201,8 @@ router.post('/logoutAll', auth, async (req, res) => {
         await req.user.save()
         res.send()
     } catch (e) {
-        res.status(500).send()
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 

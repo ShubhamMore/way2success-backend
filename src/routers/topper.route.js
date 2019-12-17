@@ -77,8 +77,8 @@ router.post('/newTopper', auth, multer({ storage: storage }).single("image"), as
 
         res.status(200).send(topper)  
     } catch (e) {
-        let err = "Something bad happend, " + e;
-        res.status(400).send(err.replace('Error: ', ''));        
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -89,7 +89,8 @@ router.post('/getAllToppers', async (req, res) => {
         res.status(200).send(topper);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -100,7 +101,8 @@ router.post('/getToppersByYear', auth, async (req, res) => {
         res.status(200).send(topper);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -113,7 +115,8 @@ router.post('/getTopper', auth, async (req, res) => {
         res.status(200).send(topper);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -133,8 +136,8 @@ router.post('/deleteTopper', auth, async (req, res) => {
         res.status(200).send(topper);
     }
     catch(e) {
-        console.log(e)
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -189,8 +192,8 @@ router.post('/editTopper',auth,  multer({ storage: storage }).single("image"), a
 
         res.status(200).send({success: true})
     } catch (e) {
-        const err = "Something bad happen, " + e;
-        res.status(400).send(err.replace('Error: ', ''));
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 

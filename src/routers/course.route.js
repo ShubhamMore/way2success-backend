@@ -27,7 +27,8 @@ router.post('/getCourses', auth, async (req, res) => {
         res.status(200).send(courses);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -40,7 +41,8 @@ router.post('/getCourses', auth, async (req, res) => {
         res.status(200).send(courses);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -50,7 +52,8 @@ router.post('/getCoursesByBranch', auth, async (req, res) => {
         res.status(200).send(courses);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -67,7 +70,8 @@ router.post('/getBranchesAndCourses', auth, async (req, res) => {
         res.status(200).send({branches, courses});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -104,7 +108,8 @@ router.post('/getBranchesAndCoursesForContent', async (req, res) => {
         res.status(200).send(branch);
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -121,11 +126,11 @@ router.post('/getCourse', auth, async (req, res) => {
         res.status(200).send(course);
     }
     catch(e) {
-        let error = ""+e;
+        let err = "" + e;
         if(e.name === "CastError") {
-            error = "No Course Found";
+            err = "No Course Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -139,11 +144,11 @@ router.post('/getCourseForEditing', auth, async (req, res) => {
         res.status(200).send({course, branches});
     }
     catch(e) {
-        let error = ""+e;
+        let err = "" + e;
         if(e.name === "CastError") {
-            error = "No Course Found";
+            err = "No Course Found";
         }
-        res.status(400).send(error);
+        res.status(400).send(err.replace('Error: ', ''))
     }
 })
 
@@ -156,7 +161,8 @@ router.post('/editCourse', auth, async (req, res) => {
         res.status(200).send({success : true});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -169,7 +175,8 @@ router.post('/deactivateCourse', auth, async (req, res) => {
         res.status(200).send({success : true});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
@@ -182,7 +189,8 @@ router.post('/activateCourse', auth, async (req, res) => {
         res.status(200).send({success : true});
     }
     catch(e) {
-        res.status(400).send(""+e);
+        let err = "" + e;
+        res.status(400).send(err.replace('Error: ', ''))
     }
 });
 
