@@ -13,6 +13,7 @@
     "cors": "^2.8.5",
     "env-cmd": "^9.0.3",
     "express": "^4.16.4",
+    "googleapis": "^46.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.4.0",
     "mongoose": "^5.8.1",
