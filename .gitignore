@@ -4,4 +4,5 @@ images/*
 media/*
 !media/.gitkeep 
 toppers/*
-!toppers/.gitkeep 
+!toppers/.gitkeep
+gmail-api-client_secret.json
