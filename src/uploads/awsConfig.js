@@ -7,8 +7,8 @@ const SECRET = process.env.AWS_SECRET_ACCESS_KEY;
 // The name of the bucket that you have created
 
 const s3 = new AWS.S3({
-    accessKeyId: ID,
-    secretAccessKey: SECRET
+  accessKeyId: ID,
+  secretAccessKey: SECRET
 });
 
-module.exports = s3
+module.exports = s3;

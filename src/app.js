@@ -1,11 +1,11 @@
-const path = require("path");
-const express = require('express')
-const bodyParser = require("body-parser");
+const path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
 var cors = require('cors');
 
 require('./database/mongoose');
 
-const birthDayWishes = require("./functions/birthDayWishes")
+const birthDayWishes = require('./functions/birthDayWishes');
 
 const aboutRouter = require('./routers/about.route');
 const attendanceRouter = require('./routers/attendance.route');
@@ -30,29 +30,32 @@ app.use(express.json());
 
 app.use(cors());
 
-app.use("/media", express.static(path.join("media")));
-app.use("/toppers", express.static(path.join("toppers")));
-app.use("/images", express.static(path.join("images")));
+app.use('/media', express.static(path.join('media')));
+app.use('/toppers', express.static(path.join('toppers')));
+app.use('/images', express.static(path.join('images')));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', '*');
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  // Request methods you wish to allow
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, OPTIONS, PUT, PATCH, DELETE'
+  );
 
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', '*');
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', '*');
 
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
 
-    // Pass to next layer of middleware
-    next();
+  // Pass to next layer of middleware
+  next();
 });
 
 app.use(aboutRouter);
@@ -81,9 +84,9 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({
-      error: {
-          message: error.message
-      }
+    error: {
+      message: error.message
+    }
   });
 });
 

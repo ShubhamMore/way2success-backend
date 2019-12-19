@@ -1,20 +1,20 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const imageCategorySchema = new mongoose.Schema({
-    category:{
-        type:String,
-        required:true
-    }
+  category: {
+    type: String,
+    required: true
+  }
 });
 
-imageCategorySchema.methods.toJSON = function () {
-    const imageCategory = this
-    const imageCategoryObject = imageCategory.toObject()
+imageCategorySchema.methods.toJSON = function() {
+  const imageCategory = this;
+  const imageCategoryObject = imageCategory.toObject();
 
-    delete imageCategoryObject.__v
+  delete imageCategoryObject.__v;
 
-    return imageCategoryObject
-}
+  return imageCategoryObject;
+};
 
-const imageCategory = mongoose.model('ImageCategory', imageCategorySchema)
+const imageCategory = mongoose.model('ImageCategory', imageCategorySchema);
 
-module.exports = imageCategory
+module.exports = imageCategory;
