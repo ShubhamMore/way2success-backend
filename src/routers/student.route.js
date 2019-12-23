@@ -108,6 +108,12 @@ router.post('/getStudents', auth, async (req, res) => {
       searchData = {};
     }
 
+    if (req.body.studentType === '0') {
+      searchData.$or = [{ status: '0' }, { status: '1' }];
+    } else if (req.body.studentType === '1') {
+      searchData.status = '2';
+    }
+
     const students = await Student.find(searchData);
     if (!students) {
       throw new Error('No Student Found');
