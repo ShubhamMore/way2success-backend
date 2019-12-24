@@ -1,10 +1,11 @@
 const express = require('express');
 const Budget = require('../models/budget.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const sortArrayOfObjects = require('../functions/sortArrayOfObjects');
 const router = new express.Router();
 
-router.post('/saveBudget', auth, async (req, res) => {
+router.post('/saveBudget', auth, adminAuth, async (req, res) => {
   const budget = new Budget(req.body);
   try {
     await budget.save();
@@ -18,7 +19,7 @@ router.post('/saveBudget', auth, async (req, res) => {
   }
 });
 
-router.post('/getBudget', auth, async (req, res) => {
+router.post('/getBudget', auth, adminAuth, async (req, res) => {
   let searchDataforIncome;
   let searchDataforExpence;
 
@@ -62,7 +63,7 @@ router.post('/getBudget', auth, async (req, res) => {
   }
 });
 
-router.post('/getBudgetSummery', auth, async (req, res) => {
+router.post('/getBudgetSummery', auth, adminAuth, async (req, res) => {
   try {
     let budgetSummery;
 
@@ -87,7 +88,7 @@ router.post('/getBudgetSummery', auth, async (req, res) => {
   }
 });
 
-router.post('/deleteBudget', auth, async (req, res) => {
+router.post('/deleteBudget', auth, adminAuth, async (req, res) => {
   try {
     const budget = await Budget.findByIdAndRemove(req.body._id);
 

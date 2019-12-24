@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const Topper = require('../models/topper.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 
 const user_image = require('../shared/user.image');
 
@@ -38,6 +39,7 @@ const storage = multer.diskStorage({
 router.post(
   '/newTopper',
   auth,
+  adminAuth,
   multer({ storage: storage }).single('image'),
   async (req, res) => {
     const file = req.file;
@@ -101,7 +103,7 @@ router.post('/getAllToppers', async (req, res) => {
   }
 });
 
-router.post('/getToppersByYear', auth, async (req, res) => {
+router.post('/getToppersByYear', auth, adminAuth, async (req, res) => {
   try {
     const topper = await Topper.find({ year: req.body.year });
 
@@ -112,7 +114,7 @@ router.post('/getToppersByYear', auth, async (req, res) => {
   }
 });
 
-router.post('/getTopper', auth, async (req, res) => {
+router.post('/getTopper', auth, adminAuth, async (req, res) => {
   try {
     const topper = await Topper.findById(req.body._id);
     if (!topper) {
@@ -125,7 +127,7 @@ router.post('/getTopper', auth, async (req, res) => {
   }
 });
 
-router.post('/deleteTopper', auth, async (req, res) => {
+router.post('/deleteTopper', auth, adminAuth, async (req, res) => {
   try {
     const topper = await Topper.findByIdAndRemove(req.body._id);
 
@@ -147,6 +149,7 @@ router.post('/deleteTopper', auth, async (req, res) => {
 router.post(
   '/editTopper',
   auth,
+  adminAuth,
   multer({ storage: storage }).single('image'),
   async (req, res) => {
     const file = req.file;

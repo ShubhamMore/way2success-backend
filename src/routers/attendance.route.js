@@ -2,9 +2,11 @@ const express = require('express');
 const Attendance = require('../models/attendance.model');
 const Student = require('../models/student.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const findStudentName = require('../functions/findStudentName');
 const sortArrayOfObjects = require('../functions/sortArrayOfObjects');
 const mongoose = require('mongoose');
+
 const findAttendanceStatus = (student, attendance) => {
   let status;
 
@@ -20,7 +22,7 @@ const findAttendanceStatus = (student, attendance) => {
 
 const router = new express.Router();
 
-router.post('/getStudentsForAttendance', auth, async (req, res) => {
+router.post('/getStudentsForAttendance', auth, adminAuth, async (req, res) => {
   try {
     let attendance = await Attendance.findOne({
       date: req.body.date,
@@ -64,7 +66,7 @@ router.post('/getStudentsForAttendance', auth, async (req, res) => {
   }
 });
 
-router.post('/saveAttendance', auth, async (req, res) => {
+router.post('/saveAttendance', auth, adminAuth, async (req, res) => {
   try {
     const attendance = new Attendance(req.body);
 

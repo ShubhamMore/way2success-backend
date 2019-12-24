@@ -9,9 +9,10 @@ const ImageCategory = require('../models/image-category.model');
 const Image = require('../models/image.model');
 const Topper = require('../models/topper.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const router = new express.Router();
 
-router.post('/getDashboardData', auth, async (req, res) => {
+router.post('/getDashboardData', auth, adminAuth, async (req, res) => {
   try {
     const student = await Student.find();
     const exam = await Exam.find();

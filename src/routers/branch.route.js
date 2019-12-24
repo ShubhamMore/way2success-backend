@@ -1,9 +1,10 @@
 const express = require('express');
 const Branch = require('../models/branch.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const router = new express.Router();
 
-router.post('/newBranch', auth, async (req, res) => {
+router.post('/newBranch', auth, adminAuth, async (req, res) => {
   const branch = new Branch(req.body);
   try {
     await branch.save();
@@ -17,7 +18,7 @@ router.post('/newBranch', auth, async (req, res) => {
   }
 });
 
-router.post('/getBranches', auth, async (req, res) => {
+router.post('/getBranches', auth, adminAuth, async (req, res) => {
   try {
     const branches = await Branch.find();
 
@@ -28,7 +29,7 @@ router.post('/getBranches', auth, async (req, res) => {
   }
 });
 
-router.post('/getBranch', auth, async (req, res) => {
+router.post('/getBranch', auth, adminAuth, async (req, res) => {
   try {
     const branch = await Branch.findById(req.body._id);
     if (!branch) {
@@ -45,7 +46,7 @@ router.post('/getBranch', auth, async (req, res) => {
   }
 });
 
-router.post('/getBranchForEditing', auth, async (req, res) => {
+router.post('/getBranchForEditing', auth, adminAuth, async (req, res) => {
   try {
     const branch = await Branch.findById(req.body._id);
     if (!branch) {

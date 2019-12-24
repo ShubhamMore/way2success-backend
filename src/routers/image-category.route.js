@@ -3,9 +3,10 @@ const Image = require('../models/image.model');
 const ImageCategory = require('../models/image-category.model');
 const awsRemoveFile = require('../uploads/awsRemoveFile');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const router = new express.Router();
 
-router.post('/newCategory', auth, async (req, res, next) => {
+router.post('/newCategory', auth, adminAuth, async (req, res, next) => {
   try {
     const imageCategory = new ImageCategory(req.body);
     await imageCategory.save();
@@ -20,7 +21,7 @@ router.post('/newCategory', auth, async (req, res, next) => {
   }
 });
 
-router.post('/getImageCategories', async (req, res) => {
+router.post('/getImageCategories', adminAuth, async (req, res) => {
   try {
     const categories = await ImageCategory.find();
 
@@ -31,7 +32,7 @@ router.post('/getImageCategories', async (req, res) => {
   }
 });
 
-router.post('/deleteCategory', auth, async (req, res) => {
+router.post('/deleteCategory', auth, adminAuth, async (req, res) => {
   try {
     const category = await ImageCategory.findByIdAndDelete(req.body._id);
     if (!category) {

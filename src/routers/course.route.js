@@ -2,11 +2,12 @@ const express = require('express');
 const Course = require('../models/course.model');
 const Branch = require('../models/branch.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const findBranchName = require('../functions/findBranchName');
 
 const router = new express.Router();
 
-router.post('/newCourse', auth, async (req, res) => {
+router.post('/newCourse', auth, adminAuth, async (req, res) => {
   const course = new Course(req.body);
   try {
     await course.save();
@@ -17,30 +18,6 @@ router.post('/newCourse', auth, async (req, res) => {
   } catch (e) {
     let err = 'Something bad happend';
     res.status(400).send(err);
-  }
-});
-
-router.post('/getCourses', auth, async (req, res) => {
-  try {
-    const courses = await Course.find();
-
-    res.status(200).send(courses);
-  } catch (e) {
-    let err = '' + e;
-    res.status(400).send(err.replace('Error: ', ''));
-  }
-});
-
-router.post('/getCourses', auth, async (req, res) => {
-  try {
-    const courses = await Course.find();
-    if (!courses) {
-      throw new Error('No Course Found');
-    }
-    res.status(200).send(courses);
-  } catch (e) {
-    let err = '' + e;
-    res.status(400).send(err.replace('Error: ', ''));
   }
 });
 
@@ -128,7 +105,7 @@ router.post('/getCourse', auth, async (req, res) => {
   }
 });
 
-router.post('/getCourseForEditing', auth, async (req, res) => {
+router.post('/getCourseForEditing', auth, adminAuth, async (req, res) => {
   try {
     const course = await Course.findById(req.body._id);
     if (!course) {
@@ -145,7 +122,7 @@ router.post('/getCourseForEditing', auth, async (req, res) => {
   }
 });
 
-router.post('/editCourse', auth, async (req, res) => {
+router.post('/editCourse', auth, adminAuth, async (req, res) => {
   try {
     const course = await Course.findByIdAndUpdate(req.body._id, req.body);
     if (!course) {
@@ -158,7 +135,7 @@ router.post('/editCourse', auth, async (req, res) => {
   }
 });
 
-router.post('/deactivateCourse', auth, async (req, res) => {
+router.post('/deactivateCourse', auth, adminAuth, async (req, res) => {
   try {
     const course = await Course.findByIdAndUpdate(req.body._id, {
       status: '0'
@@ -173,7 +150,7 @@ router.post('/deactivateCourse', auth, async (req, res) => {
   }
 });
 
-router.post('/activateCourse', auth, async (req, res) => {
+router.post('/activateCourse', auth, adminAuth, async (req, res) => {
   try {
     const course = await Course.findByIdAndUpdate(req.body._id, {
       status: '1'

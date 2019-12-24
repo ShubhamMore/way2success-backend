@@ -4,11 +4,12 @@ const Student = require('../models/student.model');
 const Budget = require('../models/budget.model');
 const Course = require('../models/course.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const findBranchName = require('../functions/findBranchName');
 
 const router = new express.Router();
 
-router.post('/newReceipt', auth, async (req, res, next) => {
+router.post('/newReceipt', auth, adminAuth, async (req, res, next) => {
   const receipt = new Receipt(req.body);
   try {
     await receipt.save();
@@ -55,7 +56,7 @@ router.post('/getReceipt', auth, async (req, res, next) => {
     res.status(400).send(err.replace('Error: ', ''));
   }
 });
-router.post('/deleteReceipt', auth, async (req, res, next) => {
+router.post('/deleteReceipt', auth, adminAuth, async (req, res, next) => {
   try {
     const receipt = await Receipt.findByIdAndDelete(req.body._id);
     await Budget.findOneAndDelete({ receipt: receipt._id });

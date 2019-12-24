@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const Image = require('../models/image.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 
 const awsUploadFiles = require('../uploads/awsUploadFiles');
 const awsRemoveFile = require('../uploads/awsRemoveFile');
@@ -36,6 +37,7 @@ const storage = multer.diskStorage({
 router.post(
   '/newImages',
   auth,
+  adminAuth,
   multer({ storage: storage }).array('image'),
   async (req, res, next) => {
     const file = req.files;
@@ -98,7 +100,7 @@ router.post('/getImages', async (req, res) => {
   }
 });
 
-router.post('/getImagesByCategory', auth, async (req, res) => {
+router.post('/getImagesByCategory', auth, adminAuth, async (req, res) => {
   try {
     const images = await Image.find({ category: req.body.category });
 
@@ -112,7 +114,7 @@ router.post('/getImagesByCategory', auth, async (req, res) => {
   }
 });
 
-router.post('/deleteImage', auth, async (req, res) => {
+router.post('/deleteImage', auth, adminAuth, async (req, res) => {
   const public_id = req.body.public_id;
   try {
     const image = await Image.findOneAndRemove({ public_id });

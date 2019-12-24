@@ -5,6 +5,7 @@ const Course = require('../models/course.model');
 const History = require('../models/history.model');
 const User = require('../models/user.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const findSubjectNames = require('../functions/findSubjectNames');
 const findBranchName = require('../functions/findBranchName');
 const constructHistory = require('../functions/constructHistory');
@@ -12,7 +13,7 @@ const mongoose = require('mongoose');
 const sendMail = require('../email/mail');
 const router = new express.Router();
 
-router.post('/newStudent', auth, async (req, res) => {
+router.post('/newStudent', auth, adminAuth, async (req, res) => {
   try {
     const newUser = {
       name: req.body.name.toLowerCase(),
@@ -83,7 +84,7 @@ router.post('/newStudent', auth, async (req, res) => {
   }
 });
 
-router.post('/getStudents', auth, async (req, res) => {
+router.post('/getStudents', auth, adminAuth, async (req, res) => {
   try {
     let searchData;
     if (req.body.searchType == '0') {
@@ -162,7 +163,7 @@ router.post('/getStudent', auth, async (req, res) => {
   }
 });
 
-router.post('/getStudentForPayment', auth, async (req, res) => {
+router.post('/getStudentForPayment', auth, adminAuth, async (req, res) => {
   try {
     const student = await Student.findById(req.body._id);
     if (!student) {
@@ -224,7 +225,7 @@ router.post('/getStudentHistory', auth, async (req, res) => {
   }
 });
 
-router.post('/getStudentForEditing', auth, async (req, res) => {
+router.post('/getStudentForEditing', auth, adminAuth, async (req, res) => {
   try {
     const branches = await Branch.find();
     if (branches.length < 1) {
@@ -243,6 +244,31 @@ router.post('/getStudentForEditing', auth, async (req, res) => {
     }
 
     res.status(200).send({ student, courses, branches });
+  } catch (e) {
+    let err = '' + e;
+    res.status(400).send(err.replace('Error: ', ''));
+  }
+});
+
+router.post('/getStudentDataForLecture', auth, async (req, res) => {
+  try {
+    const student = await Student.findOne(
+      { _id: req.body._id },
+      { _id: 0, course: 1, batch: 1, subjects: 1 }
+    );
+
+    const subjects = await findSubjectNames(
+      student.course,
+      student.batch,
+      student.subjects
+    );
+
+    const studentData = {
+      course: student.course,
+      batch: student.batch,
+      subjects: subjects
+    };
+    res.status(200).send(studentData);
   } catch (e) {
     let err = '' + e;
     res.status(400).send(err.replace('Error: ', ''));
@@ -294,7 +320,7 @@ router.post('/getStudentSubjects', auth, async (req, res) => {
   }
 });
 
-router.post('/editStudent', auth, async (req, res) => {
+router.post('/editStudent', auth, adminAuth, async (req, res) => {
   try {
     const student = await Student.findById(req.body._id);
 

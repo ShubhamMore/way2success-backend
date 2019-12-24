@@ -1,9 +1,10 @@
 const express = require('express');
 const Contact = require('../models/contact.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const router = new express.Router();
 
-router.post('/saveContact', auth, async (req, res) => {
+router.post('/saveContact', auth, adminAuth, async (req, res) => {
   try {
     let contact;
     if (req.body._id) {

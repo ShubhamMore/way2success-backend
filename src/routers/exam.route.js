@@ -4,6 +4,7 @@ const Course = require('../models/course.model');
 const Student = require('../models/student.model');
 const Exam = require('../models/exam.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const findStudentName = require('../functions/findStudentName');
 const findBranchName = require('../functions/findBranchName');
 const sortArrayOfObjects = require('../functions/sortArrayOfObjects');
@@ -28,7 +29,7 @@ const findPassFailStatus = (marks, passingMarks) => {
 
 const router = new express.Router();
 
-router.post('/getStudentsForExam', auth, async (req, res) => {
+router.post('/getStudentsForExam', auth, adminAuth, async (req, res) => {
   try {
     // SELECT ALL FROM STUDENTS WHERE COURSE = req.body.course AND BATCH = req.body.batch AND (STATUS = "0" OR STATUS = "1") AND STUDENT.SUBJECTS.includes(req.body.subject)
     const students = await Student.find({
@@ -49,7 +50,7 @@ router.post('/getStudentsForExam', auth, async (req, res) => {
   }
 });
 
-router.post('/saveExam', auth, async (req, res) => {
+router.post('/saveExam', auth, adminAuth, async (req, res) => {
   try {
     const exam = new Exam(req.body);
 
@@ -62,7 +63,7 @@ router.post('/saveExam', auth, async (req, res) => {
   }
 });
 
-router.post('/getExams', auth, async (req, res) => {
+router.post('/getExams', auth, adminAuth, async (req, res) => {
   try {
     const regExp = new RegExp('.*' + req.body.year + '.*');
     const exam = await Exam.find({
@@ -126,7 +127,7 @@ router.post('/getExamsPerformance', auth, async (req, res) => {
   }
 });
 
-router.post('/getExam', auth, async (req, res) => {
+router.post('/getExam', auth, adminAuth, async (req, res) => {
   try {
     const exam = await Exam.findById(req.body._id);
 
@@ -155,7 +156,7 @@ router.post('/getExam', auth, async (req, res) => {
   }
 });
 
-router.post('/editExam', auth, async (req, res) => {
+router.post('/editExam', auth, adminAuth, async (req, res) => {
   try {
     const exam = await Exam.findByIdAndUpdate(req.body._id, req.body.exam);
 
@@ -170,7 +171,7 @@ router.post('/editExam', auth, async (req, res) => {
   }
 });
 
-router.post('/deleteExam', auth, async (req, res) => {
+router.post('/deleteExam', auth, adminAuth, async (req, res) => {
   try {
     const exam = await Exam.findByIdAndRemove(req.body._id);
 

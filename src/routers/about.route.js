@@ -1,9 +1,10 @@
 const express = require('express');
 const About = require('../models/about.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const router = new express.Router();
 
-router.post('/saveAbout', auth, async (req, res) => {
+router.post('/saveAbout', auth, adminAuth, async (req, res) => {
   try {
     let about;
     if (req.body._id) {

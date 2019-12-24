@@ -1,6 +1,7 @@
 const express = require('express');
 const Enquiry = require('../models/enquiry.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 const sendMail = require('../email/mail');
 const sortArrayOfObjectsById = require('../functions/sortArrayOfObjectsById');
 const router = new express.Router();
@@ -35,7 +36,7 @@ router.post('/sendEnquiry', async (req, res) => {
   }
 });
 
-router.post('/getEnquiries', auth, async (req, res) => {
+router.post('/getEnquiries', auth, adminAuth, async (req, res) => {
   try {
     const enquiry = await Enquiry.find();
     if (!enquiry) {
@@ -49,7 +50,7 @@ router.post('/getEnquiries', auth, async (req, res) => {
   }
 });
 
-router.post('/getEnquiry', auth, async (req, res) => {
+router.post('/getEnquiry', auth, adminAuth, async (req, res) => {
   try {
     const enquiry = await Enquiry.findByIdAndUpdate(req.body._id, {
       seen: '1'
@@ -68,7 +69,7 @@ router.post('/getEnquiry', auth, async (req, res) => {
   }
 });
 
-router.post('/unseenEnquiries', auth, async (req, res) => {
+router.post('/unseenEnquiries', auth, adminAuth, async (req, res) => {
   try {
     const enquiry = await Enquiry.find({ seen: '0' });
     if (!enquiry) {
@@ -82,7 +83,7 @@ router.post('/unseenEnquiries', auth, async (req, res) => {
   }
 });
 
-router.post('/markEnquiryAsSeen', auth, async (req, res) => {
+router.post('/markEnquiryAsSeen', auth, adminAuth, async (req, res) => {
   try {
     const enquiry = await Enquiry.findByIdAndUpdate(req.body._id, {
       seen: '1'
@@ -97,7 +98,7 @@ router.post('/markEnquiryAsSeen', auth, async (req, res) => {
   }
 });
 
-router.post('/replyEnquiry', auth, async (req, res) => {
+router.post('/replyEnquiry', auth, adminAuth, async (req, res) => {
   try {
     const enquiry = await Enquiry.findById(req.body.enquiry);
     if (!enquiry) {

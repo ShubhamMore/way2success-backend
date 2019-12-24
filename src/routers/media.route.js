@@ -4,6 +4,7 @@ const Media = require('../models/media.model');
 const Branch = require('../models/branch.model');
 const Course = require('../models/course.model');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/admin-auth');
 
 const awsUploadFile = require('../uploads/awsUploadFile');
 const awsRemoveFile = require('../uploads/awsRemoveFile');
@@ -36,6 +37,7 @@ const storage = multer.diskStorage({
 router.post(
   '/newMedia',
   auth,
+  adminAuth,
   multer({ storage: storage }).single('media'),
   async (req, res, next) => {
     const file = req.file;
@@ -93,7 +95,7 @@ router.post(
   }
 );
 
-router.post('/getAllMedia', auth, async (req, res) => {
+router.post('/getAllMedia', auth, adminAuth, async (req, res) => {
   try {
     const mediaes = await Media.find({
       course: req.body.course,
@@ -147,7 +149,7 @@ router.post('/getMedia', auth, async (req, res) => {
   }
 });
 
-router.post('/getMediaforEditing', auth, async (req, res) => {
+router.post('/getMediaforEditing', auth, adminAuth, async (req, res) => {
   try {
     const branches = await Branch.find();
 
@@ -175,7 +177,7 @@ router.post('/getMediaforEditing', auth, async (req, res) => {
   }
 });
 
-router.post('/editMedia', auth, async (req, res) => {
+router.post('/editMedia', auth, adminAuth, async (req, res) => {
   try {
     const media = await Media.findByIdAndUpdate(req.body._id, req.body);
     if (!media) {
@@ -191,7 +193,7 @@ router.post('/editMedia', auth, async (req, res) => {
   }
 });
 
-router.post('/deleteMedia', auth, async (req, res) => {
+router.post('/deleteMedia', auth, adminAuth, async (req, res) => {
   try {
     const media = await Media.findOneAndRemove(req.body._id);
     if (!media) {
