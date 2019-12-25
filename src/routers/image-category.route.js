@@ -21,7 +21,7 @@ router.post('/newCategory', auth, adminAuth, async (req, res, next) => {
   }
 });
 
-router.post('/getImageCategories', adminAuth, async (req, res) => {
+router.post('/getImageCategories', auth, adminAuth, async (req, res) => {
   try {
     const categories = await ImageCategory.find();
 
