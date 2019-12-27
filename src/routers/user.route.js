@@ -130,8 +130,6 @@ router.post('/validateToken', async (req, res) => {
       throw new Error('Invalid Token');
     }
 
-    console.log(user);
-
     const data = {
       valid_token: true
     };
