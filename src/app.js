@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const compression = require('compression');
 var cors = require('cors');
 
 require('./database/mongoose');
@@ -31,6 +32,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors());
+app.use(compression());
 
 app.use('/media', express.static(path.join('media')));
 app.use('/toppers', express.static(path.join('toppers')));
