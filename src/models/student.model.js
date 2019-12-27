@@ -24,6 +24,10 @@ const studentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true
   },
+  courseType: {
+    type: String,
+    required: true
+  },
   course: {
     type: mongoose.Schema.Types.ObjectId,
     required: true

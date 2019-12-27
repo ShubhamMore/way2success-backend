@@ -11,6 +11,7 @@ const constructHistory = async courses => {
     );
     courseObj._id = thiscourse._id;
     courseObj.course = thiscourse.courseName;
+    courseObj.courseType = thiscourse.courseType;
 
     const batchArr = new Array();
     curcourseHistory.batches.forEach(curBatchHistory => {

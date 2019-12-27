@@ -20,6 +20,10 @@ const examSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  courseType: {
+    type: String,
+    required: true
+  },
   course: {
     type: String,
     required: true

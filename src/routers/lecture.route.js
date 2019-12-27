@@ -40,10 +40,13 @@ router.post('/getLecture', auth, async (req, res) => {
 
 router.post('/getLecturesForStudent', auth, async (req, res) => {
   try {
+    const date = new RegExp('.*' + req.body.date + '.*');
+
     const lecture = await Lecture.find({
       course: req.body.course,
       batch: req.body.batch,
-      subject: req.body.subject
+      subject: req.body.subject,
+      startTime: date
     });
 
     res.status(200).send(lecture);

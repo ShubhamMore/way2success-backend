@@ -4,11 +4,19 @@ const lectureSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  date: {
+  startTime: {
+    type: String,
+    required: true
+  },
+  duration: {
     type: String,
     required: true
   },
   branch: {
+    type: String,
+    required: true
+  },
+  courseType: {
     type: String,
     required: true
   },

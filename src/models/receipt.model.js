@@ -35,6 +35,26 @@ const receiptSchema = new mongoose.Schema({
   description: {
     type: String,
     require: true
+  },
+  chequeNumber: {
+    type: String,
+    require: true
+  },
+  chequeDate: {
+    type: String,
+    require: true
+  },
+  bankName: {
+    type: String,
+    require: true
+  },
+  bankBranch: {
+    type: String,
+    require: true
+  },
+  status: {
+    type: String,
+    default: '1'
   }
 });
 

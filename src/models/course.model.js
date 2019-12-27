@@ -5,6 +5,10 @@ const courseSchema = new mongoose.Schema({
     type: String,
     require: true
   },
+  courseType: {
+    type: String,
+    require: true
+  },
   branch: {
     type: String,
     require: true

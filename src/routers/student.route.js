@@ -31,6 +31,7 @@ router.post('/newStudent', auth, adminAuth, async (req, res) => {
       email: req.body.email,
       address: req.body.address,
       branch: req.body.branch,
+      courseType: req.body.courseType,
       course: req.body.course,
       batch: req.body.batch,
       subjects: req.body.subjects,
@@ -62,6 +63,7 @@ router.post('/newStudent', auth, adminAuth, async (req, res) => {
       history: [
         {
           course: student.course,
+          courseType: student.courseType,
           batches: [
             {
               batch: student.batch,
@@ -90,6 +92,7 @@ router.post('/getStudents', auth, adminAuth, async (req, res) => {
     if (req.body.searchType == '0') {
       searchData = {
         branch: req.body.branch,
+        courseType: req.body.courseType,
         course: req.body.course,
         batch: req.body.batch,
         subjects: { $all: [{ _id: req.body.subject }] }
@@ -97,14 +100,23 @@ router.post('/getStudents', auth, adminAuth, async (req, res) => {
     } else if (req.body.searchType == '1') {
       searchData = {
         branch: req.body.branch,
+        courseType: req.body.courseType,
         course: req.body.course,
         batch: req.body.batch
       };
     } else if (req.body.searchType == '2') {
-      searchData = { branch: req.body.branch, course: req.body.course };
+      searchData = {
+        branch: req.body.branch,
+        courseType: req.body.courseType,
+        course: req.body.course
+      };
     } else if (req.body.searchType == '3') {
       const student = new RegExp('.*' + req.body.student + '.*');
-      searchData = { branch: req.body.branch, name: student };
+      searchData = {
+        branch: req.body.branch,
+        courseType: req.body.courseType,
+        name: student
+      };
     } else {
       searchData = {};
     }
@@ -215,7 +227,16 @@ router.post('/getStudentHistory', auth, async (req, res) => {
       branchName: await findBranchName(history.branch)
     };
 
-    res.status(200).send({ branch, history: studentHistory });
+    const courseTypeArr = new Array();
+    studentHistory.forEach(curHistory => {
+      if (!courseTypeArr.includes(curHistory.courseType)) {
+        courseTypeArr.push(curHistory.courseType);
+      }
+    });
+
+    res
+      .status(200)
+      .send({ branch, history: studentHistory, courseType: courseTypeArr });
   } catch (e) {
     let err = '' + e;
     if (e.name === 'CastError') {
@@ -354,6 +375,7 @@ router.post('/editStudent', auth, adminAuth, async (req, res) => {
       email: req.body.email,
       address: req.body.address,
       branch: req.body.branch,
+      courseType: req.body.courseType,
       course: req.body.course,
       batch: req.body.batch,
       subjects: req.body.subjects,
@@ -376,6 +398,7 @@ router.post('/editStudent', auth, adminAuth, async (req, res) => {
     let course = false;
     let batch = false;
     let subject = false;
+
     if (student.course != req.body.course) {
       let match = 0;
       history.history.forEach(history => {
@@ -386,6 +409,7 @@ router.post('/editStudent', auth, adminAuth, async (req, res) => {
       if (match == 0) {
         const newHistory = {
           course: req.body.course,
+          courseType: req.body.courseType,
           batches: [
             {
               batch: req.body.batch,

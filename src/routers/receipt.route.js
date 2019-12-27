@@ -10,7 +10,7 @@ const findBranchName = require('../functions/findBranchName');
 const router = new express.Router();
 
 router.post('/newReceipt', auth, adminAuth, async (req, res, next) => {
-  const receipt = new Receipt(req.body);
+  let receipt = new Receipt(req.body);
   try {
     await receipt.save();
     const budget = new Budget({
@@ -28,9 +28,22 @@ router.post('/newReceipt', auth, adminAuth, async (req, res, next) => {
   }
 });
 
-router.post('/getAllReceipts', auth, async (req, res, next) => {
+router.post('/getAllReceipts', auth, adminAuth, async (req, res, next) => {
   try {
     const receipt = await Receipt.find({ student: req.body.student });
+    res.status(200).send(receipt);
+  } catch (e) {
+    let err = '' + e;
+    res.status(400).send(err.replace('Error: ', ''));
+  }
+});
+
+router.post('/getAllReceiptsForStudent', auth, async (req, res, next) => {
+  try {
+    const receipt = await Receipt.find({
+      student: req.body.student,
+      status: '1'
+    });
     res.status(200).send(receipt);
   } catch (e) {
     let err = '' + e;
@@ -56,6 +69,24 @@ router.post('/getReceipt', auth, async (req, res, next) => {
     res.status(400).send(err.replace('Error: ', ''));
   }
 });
+
+router.post('/changeReceiptStatus', auth, adminAuth, async (req, res, next) => {
+  try {
+    const receipt = await Receipt.findByIdAndUpdate(req.body._id, {
+      status: req.body.status
+    });
+
+    if (!receipt) {
+      throw new Error('Receipt Status Updation Failed');
+    }
+
+    res.status(200).send(receipt);
+  } catch (e) {
+    let err = '' + e;
+    res.status(400).send(err.replace('Error: ', ''));
+  }
+});
+
 router.post('/deleteReceipt', auth, adminAuth, async (req, res, next) => {
   try {
     const receipt = await Receipt.findByIdAndDelete(req.body._id);

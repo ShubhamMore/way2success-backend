@@ -18,6 +18,10 @@ const historySchema = new mongoose.Schema({
         type: String,
         required: true
       },
+      courseType: {
+        type: String,
+        required: true
+      },
       batches: [
         {
           batch: {

@@ -23,7 +23,10 @@ router.post('/newCourse', auth, adminAuth, async (req, res) => {
 
 router.post('/getCoursesByBranch', auth, async (req, res) => {
   try {
-    const courses = await Course.find({ branch: req.body.branch });
+    const courses = await Course.find({
+      branch: req.body.branch,
+      courseType: req.body.courseType
+    });
     res.status(200).send(courses);
   } catch (e) {
     let err = '' + e;
@@ -52,19 +55,24 @@ router.post('/getBranchesAndCoursesForContent', async (req, res) => {
   try {
     const branches = await Branch.find({ status: '1' });
     const courses = await Course.find({ status: '1' });
-
     let branch = new Array();
 
     branches.forEach(curBranch => {
-      let course = new Array();
+      let diplomaCourse = new Array();
+      let degreeCourse = new Array();
       courses.forEach(curCourse => {
         if (curBranch._id.toString() === curCourse.branch.toString()) {
           const courseObj = {
             _id: curCourse._id,
             courseName: curCourse.courseName,
+            courseType: curCourse.courseType,
             batch: curCourse.batch
           };
-          course.push(courseObj);
+          if (courseObj.courseType === '0') {
+            diplomaCourse.push(courseObj);
+          } else {
+            degreeCourse.push(courseObj);
+          }
         }
       });
       const branchObj = {
@@ -73,7 +81,8 @@ router.post('/getBranchesAndCoursesForContent', async (req, res) => {
         address: curBranch.address,
         phone: curBranch.phone,
         email: curBranch.email,
-        course: course
+        diplomaCourse: diplomaCourse,
+        degreeCourse: degreeCourse
       };
       branch.push(branchObj);
     });
