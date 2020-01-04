@@ -9,4 +9,5 @@ lectureContents/*
 !lectureContents/.gitkeep
 image-categories/*
 !image-categories/.gitkeep
+config/dev-env.env
 gmail-api-client_secret.json

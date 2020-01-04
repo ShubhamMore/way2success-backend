@@ -29,7 +29,7 @@
   },
   "scripts": {
     "start": "env-cmd -f ./config/dev.env node server.js",
-    "dev": "env-cmd -f ./config/dev.env nodemon server.js",
+    "dev": "env-cmd -f ./config/dev-env.env nodemon server.js",
     "startForever": "env-cmd -f ./config/dev.env pm2 start server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

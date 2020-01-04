@@ -40,22 +40,24 @@ router.post('/newStudent', auth, adminAuth, async (req, res) => {
     const student = new Student(newStudent);
     await student.save();
 
-    const mail = {
-      to: student.email,
-      from: process.env.EMAIL,
-      subject: 'Your login details for way2success.education',
-      text: '',
-      html: `
-                <h2>Welcome to Way2Success <em>${student.name}</em></h2><br>
-                <p>Your Login Credentials are : </p><br>
-                <strong>Username : </strong> ${student.email}
-                <strong>password : </strong> ${student.phone}<br>
-                <p>Click the following link for login..</p>
-                <a href="http://www.way2success.education/#/login">http://www.way2success.education/</a>
-            `
-    };
+    if (student.status === '1') {
+      const mail = {
+        to: student.email,
+        from: process.env.EMAIL,
+        subject: 'Your login details for way2success.education',
+        text: '',
+        html: `
+                  <h2>Welcome to Way2Success <em>${student.name}</em></h2><br>
+                  <p>Your Login Credentials are : </p><br>
+                  <strong>Username : </strong> ${student.email}
+                  <strong>password : </strong> ${student.phone}<br>
+                  <p>Click the following link for login..</p>
+                  <a href="http://www.way2success.education/#/login">http://www.way2success.education/</a>
+              `
+      };
 
-    await sendMail(mail);
+      await sendMail(mail);
+    }
 
     const newHistory = {
       student: student._id,
@@ -166,6 +168,72 @@ router.post('/getStudent', auth, async (req, res) => {
     };
 
     res.status(200).send({ student, studentMetaData });
+  } catch (e) {
+    let err = '' + e;
+    if (e.name === 'CastError') {
+      err = 'No course Found';
+    }
+    res.status(400).send(err.replace('Error: ', ''));
+  }
+});
+
+router.post('/changeStudentStatus', auth, adminAuth, async (req, res) => {
+  try {
+    const student = await Student.findOneAndUpdate(
+      { _id: req.body._id },
+      {
+        status: req.body.status
+      }
+    );
+
+    if (!student) {
+      throw new Error('No Student Found');
+    }
+
+    if (req.body.status === '0') {
+      const user = await User.findOneAndRemove({
+        email: student.email,
+        userType: 'student'
+      });
+      if (!user) {
+        throw new Error('Deactivation Failed, User Not Found');
+      }
+    } else if (req.body.status === '1') {
+      const newUser = {
+        name: student.name.toLowerCase(),
+        email: student.email,
+        password: req.body.password,
+        userType: 'student'
+      };
+      const user = new User(newUser);
+      await user.save();
+    }
+
+    const mail = {
+      to: student.email,
+      from: process.env.EMAIL,
+      subject:
+        req.body.status === '0'
+          ? 'Your way2success account is Deactivated'
+          : 'Your way2success account is Activated',
+      text: '',
+      html:
+        req.body.status === '0'
+          ? `<h2>Thank You for using Way2Success <em>${student.name}</em></h2><br>
+          <p>Your Login Credentials are deactivated by admin </p>`
+          : `
+                <h2>Welcome again to Way2Success <em>${student.name}</em></h2><br>
+                <p>Your Login Credentials are : </p><br>
+                <strong>Username : </strong> ${student.email}
+                <strong>password : </strong> ${student.phone}<br>
+                <p>Click the following link for login..</p>
+                <a href="http://www.way2success.education/#/login">http://www.way2success.education/</a>
+            `
+    };
+
+    await sendMail(mail);
+
+    res.status(200).send({ success: true });
   } catch (e) {
     let err = '' + e;
     if (e.name === 'CastError') {
