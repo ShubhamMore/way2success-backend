@@ -1,6 +1,9 @@
 const express = require('express');
 const multer = require('multer');
+const fs = require('fs').promises;
+const path = require('path');
 const Image = require('../models/image.model');
+const ImageCategory = require('../models/image-category.model');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/admin-auth');
 
@@ -33,6 +36,64 @@ const storage = multer.diskStorage({
     cb(null, name + '-' + Date.now() + '.' + ext);
   }
 });
+
+const writeFileToCategories = async categoryID => {
+  const category = await ImageCategory.findById(categoryID);
+
+  const images = await Image.find(
+    { category: categoryID },
+    { _id: 0, secure_url: 1, width: 1, height: 1 }
+  );
+
+  const saveImages = new Array();
+
+  images.forEach(curImage => {
+    const devicePreviews = {};
+
+    devicePreviews.preview_xxs = {
+      path: curImage.secure_url,
+      width: curImage.width,
+      height: curImage.height
+    };
+    devicePreviews.preview_xs = {
+      path: curImage.secure_url,
+      width: curImage.width,
+      height: curImage.height
+    };
+    devicePreviews.preview_s = {
+      path: curImage.secure_url,
+      width: curImage.width,
+      height: curImage.height
+    };
+    devicePreviews.preview_m = {
+      path: curImage.secure_url,
+      width: curImage.width,
+      height: curImage.height
+    };
+    devicePreviews.preview_l = {
+      path: curImage.secure_url,
+      width: curImage.width,
+      height: curImage.height
+    };
+    devicePreviews.preview_xl = {
+      path: curImage.secure_url,
+      width: curImage.width,
+      height: curImage.height
+    };
+    devicePreviews.raw = {
+      path: curImage.secure_url,
+      width: curImage.width,
+      height: curImage.height
+    };
+
+    saveImages.push(devicePreviews);
+  });
+
+  await fs.writeFile(
+    path.join(__dirname, '../../image-categories', category.categoryFile),
+    JSON.stringify(saveImages)
+  );
+};
 
 router.post(
   '/newImages',
@@ -70,13 +131,17 @@ router.post(
               image_name: upload_res[i].key.split('/')[1],
               secure_url: upload_res[i].Location,
               public_id: upload_res[i].key,
-              created_at: Date.now()
+              created_at: Date.now(),
+              width: upload_res[i].size.width,
+              height: upload_res[i].size.height
             };
             const image = new Image(img_data);
             const res = await image.save();
             responce.push(res);
           }
         }
+
+        await writeFileToCategories(req.body.category);
 
         res.status(200).send({ responce, upload_responce });
       } catch (e) {
@@ -124,6 +189,9 @@ router.post('/deleteImage', auth, adminAuth, async (req, res) => {
     }
 
     const responce = await awsRemoveFile(public_id);
+
+    await writeFileToCategories(image.category);
+
     res.status(200).send(responce);
   } catch (e) {
     let err = '' + e;

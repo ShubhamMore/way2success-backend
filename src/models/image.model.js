@@ -19,6 +19,14 @@ const imageSchema = new mongoose.Schema({
   created_at: {
     type: String,
     default: Date.now.toString()
+  },
+  width: {
+    type: String,
+    default: '720'
+  },
+  height: {
+    type: String,
+    default: '480'
   }
 });
 

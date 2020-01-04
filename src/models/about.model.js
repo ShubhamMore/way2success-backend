@@ -1,14 +1,10 @@
 const mongoose = require('mongoose');
 const aboutSchema = new mongoose.Schema({
-  aim: {
+  content: {
     type: String,
     default: ''
   },
   vision: {
-    type: String,
-    default: ''
-  },
-  mission: {
     type: String,
     default: ''
   }

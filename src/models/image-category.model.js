@@ -3,6 +3,14 @@ const imageCategorySchema = new mongoose.Schema({
   category: {
     type: String,
     required: true
+  },
+  categoryFile: {
+    type: String,
+    required: true
+  },
+  categoryURL: {
+    type: String,
+    required: true
   }
 });
 

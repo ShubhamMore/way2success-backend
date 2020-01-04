@@ -1,4 +1,5 @@
 const path = require('path');
+const getImageSize = require('../functions/getImageSize');
 const fs = require('fs');
 const s3 = require('./awsConfig');
 
@@ -23,6 +24,9 @@ const uploadFilesToAWS = async (filePath, fileName, cloudeDirectory) => {
       const res = await s3.upload(params).promise();
 
       if (res.Location) {
+        res.size = await getImageSize(
+          path.join(__dirname, '../../', filePath[i])
+        );
         upload_res.push(res);
       } else {
         upload_err.push(res);

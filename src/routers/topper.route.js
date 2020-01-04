@@ -92,7 +92,7 @@ router.post(
   }
 );
 
-router.post('/getAllToppers', async (req, res) => {
+router.post('/getAllToppers', auth, adminAuth, async (req, res) => {
   try {
     const topper = await Topper.find();
 

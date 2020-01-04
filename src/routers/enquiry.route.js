@@ -116,7 +116,7 @@ router.post('/replyEnquiry', auth, adminAuth, async (req, res) => {
       to: enquiry.email,
       from: process.env.REPLY_EMAIL,
       subject: curReply.subject,
-      text: curReply.message,
+      text: '',
       html: curReply.message
     };
 

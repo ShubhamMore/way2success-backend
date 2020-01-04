@@ -69,7 +69,7 @@ router.post('/login', async (req, res) => {
       email: user.email,
       userType: user.userType,
       token,
-      expiresIn: 1800
+      expiresIn: 3600
     };
 
     res.send(data);
@@ -104,8 +104,8 @@ router.post('/forgotPassword', async (req, res) => {
       to: user.email,
       from: process.env.REPLY_EMAIL,
       subject: 'Reset Password Link',
-      text: link,
-      html: `<a href='${link}'>${link}</a>`
+      text: '',
+      html: `<p>Click following link to reset your password </p><br><a href='${link}'>${link}</a>`
     };
 
     await sendMail(mail);

@@ -7,4 +7,6 @@ toppers/*
 !toppers/.gitkeep
 lectureContents/*
 !lectureContents/.gitkeep
+image-categories/*
+!image-categories/.gitkeep
 gmail-api-client_secret.json

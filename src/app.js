@@ -36,6 +36,7 @@ app.use(compression());
 
 app.use('/media', express.static(path.join('media')));
 app.use('/toppers', express.static(path.join('toppers')));
+app.use('/image-categories', express.static(path.join('image-categories')));
 app.use('/images', express.static(path.join('images')));
 
 app.use(bodyParser.urlencoded({ extended: false }));

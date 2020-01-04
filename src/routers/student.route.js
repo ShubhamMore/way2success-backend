@@ -41,11 +41,11 @@ router.post('/newStudent', auth, adminAuth, async (req, res) => {
     await student.save();
 
     const mail = {
-      from: process.env.EMAIL,
       to: student.email,
+      from: process.env.EMAIL,
       subject: 'Your login details for way2success.education',
       text: '',
-      hrml: `
+      html: `
                 <h2>Welcome to Way2Success <em>${student.name}</em></h2><br>
                 <p>Your Login Credentials are : </p><br>
                 <strong>Username : </strong> ${student.email}

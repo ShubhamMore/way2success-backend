@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs').promises;
+const path = require('path');
 const Image = require('../models/image.model');
 const ImageCategory = require('../models/image-category.model');
 const awsRemoveFile = require('../uploads/awsRemoveFile');
@@ -8,7 +10,18 @@ const router = new express.Router();
 
 router.post('/newCategory', auth, adminAuth, async (req, res, next) => {
   try {
-    const imageCategory = new ImageCategory(req.body);
+    const file = req.body.category + '.json';
+    const filePath = path.join(__dirname, '../../', 'image-categories/', file);
+
+    await fs.appendFile(filePath, '');
+
+    const url = process.env.API_URI + '/image-categories/' + file;
+    const category = {
+      category: req.body.category,
+      categoryFile: file,
+      categoryURL: url
+    };
+    const imageCategory = new ImageCategory(category);
     await imageCategory.save();
 
     const data = {
@@ -32,6 +45,20 @@ router.post('/getImageCategories', auth, adminAuth, async (req, res) => {
   }
 });
 
+router.post('/getImageCategoriesForContent', async (req, res) => {
+  try {
+    const categories = await ImageCategory.find(
+      {},
+      { _id: 0, categoryFile: 0 }
+    );
+
+    res.status(200).send(categories);
+  } catch (e) {
+    let err = '' + e;
+    res.status(400).send(err.replace('Error: ', ''));
+  }
+});
+
 router.post('/deleteCategory', auth, adminAuth, async (req, res) => {
   try {
     const category = await ImageCategory.findByIdAndDelete(req.body._id);
@@ -46,6 +73,11 @@ router.post('/deleteCategory', auth, adminAuth, async (req, res) => {
       const imageToDelete = images[i].public_id;
       await awsRemoveFile(imageToDelete);
     }
+
+    await fs.unlink(
+      path.join(__dirname, '../../', 'image-categories/', category.categoryFile)
+    );
+
     res.status(200).send({ success: true });
   } catch (e) {
     let err = '' + e;
