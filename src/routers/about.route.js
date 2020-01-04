@@ -40,7 +40,7 @@ router.post('/getAbout', auth, adminAuth, async (req, res) => {
 router.post('/getAboutAndToppers', async (req, res) => {
   try {
     const about = await About.findOne({}, { _id: 0, content: 0 });
-    const toppers = await Topper.find({}, { _id: 0 });
+    const toppers = await Topper.find({ status: 1 }, { _id: 0 });
     res.status(200).send({ about, toppers });
   } catch (e) {
     let err = '' + e;

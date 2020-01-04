@@ -33,6 +33,10 @@ const topperSchema = new mongoose.Schema({
       type: String,
       default: Date.now.toString()
     }
+  },
+  status: {
+    type: String,
+    default: '1'
   }
 });
 

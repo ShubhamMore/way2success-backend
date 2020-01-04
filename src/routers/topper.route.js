@@ -127,6 +127,21 @@ router.post('/getTopper', auth, adminAuth, async (req, res) => {
   }
 });
 
+router.post('/changeTopperStatus', auth, adminAuth, async (req, res) => {
+  try {
+    const topper = await Topper.findByIdAndUpdate(req.body._id, {
+      status: req.body.status
+    });
+    if (!topper) {
+      throw new Error('No Topper Found');
+    }
+    res.status(200).send(topper);
+  } catch (e) {
+    let err = '' + e;
+    res.status(400).send(err.replace('Error: ', ''));
+  }
+});
+
 router.post('/deleteTopper', auth, adminAuth, async (req, res) => {
   try {
     const topper = await Topper.findByIdAndRemove(req.body._id);
