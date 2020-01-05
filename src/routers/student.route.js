@@ -15,14 +15,16 @@ const router = new express.Router();
 
 router.post('/newStudent', auth, adminAuth, async (req, res) => {
   try {
-    const newUser = {
-      name: req.body.name.toLowerCase(),
-      email: req.body.email,
-      password: req.body.password,
-      userType: 'student'
-    };
-    const user = new User(newUser);
-    await user.save();
+    if (student.status === '1') {
+      const newUser = {
+        name: req.body.name.toLowerCase(),
+        email: req.body.email,
+        password: req.body.password,
+        userType: 'student'
+      };
+      const user = new User(newUser);
+      await user.save();
+    }
 
     const newStudent = {
       name: req.body.name.toLowerCase(),
