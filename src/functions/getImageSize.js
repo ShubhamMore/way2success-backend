@@ -7,7 +7,7 @@ const getImageSize = async imgUrl => {
     const dimensions = sizeOf(imgUrl);
     return { width: dimensions.width, height: dimensions.height };
   }
-  return {};
+  return { width: '', height: '' };
 };
 
 module.exports = getImageSize;

@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs').promises;
 
 const s3 = require('./awsConfig');
 
@@ -9,7 +9,7 @@ const uploadFileToAWS = async (filePath, fileName, cloudeDirectory) => {
     let upload_err;
     let file_err;
 
-    const fileContent = fs.readFileSync(filePath);
+    const fileContent = await fs.readFile(filePath);
 
     // Setting up S3 upload parameters
     const params = {

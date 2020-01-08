@@ -28,10 +28,9 @@
     "nodemon": "^2.0.2"
   },
   "scripts": {
-    "start": "env-cmd -f ./config/dev.env node server.js",
-    "dev": "env-cmd -f ./config/dev-env.env nodemon server.js",
-    "startForever": "env-cmd -f ./config/dev.env pm2 start server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "env-cmd -f ./config/dev.env node way2success.js",
+    "dev": "env-cmd -f ./config/dev.env nodemon way2success.js",
+    "prod": "env-cmd -f ./config/prod.env pm2 start way2success.js"
   },
   "author": "",
   "license": "ISC",
