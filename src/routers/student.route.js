@@ -15,7 +15,7 @@ const router = new express.Router();
 
 router.post('/newStudent', auth, adminAuth, async (req, res) => {
   try {
-    if (student.status === '1') {
+    if (req.body.status === '1') {
       const newUser = {
         name: req.body.name.toLowerCase(),
         email: req.body.email,
@@ -85,6 +85,7 @@ router.post('/newStudent', auth, adminAuth, async (req, res) => {
     };
     res.status(201).send(data);
   } catch (e) {
+    console.log(e);
     let err = '' + e;
     res.status(400).send(err.replace('Error: ', ''));
   }

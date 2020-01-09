@@ -1,6 +1,7 @@
 const express = require('express');
 const Course = require('../models/course.model');
 const Branch = require('../models/branch.model');
+const Student = require('../models/student.model');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/admin-auth');
 const findBranchName = require('../functions/findBranchName');
@@ -136,6 +137,16 @@ router.post('/editCourse', auth, adminAuth, async (req, res) => {
     const course = await Course.findByIdAndUpdate(req.body._id, req.body);
     if (!course) {
       throw new Error('Course Updation Failed');
+    }
+    if (course.courseType !== req.body.courseType) {
+      await Student.updateMany(
+        {
+          branch: course.branch,
+          course: course._id,
+          courseType: course.courseType
+        },
+        { courseType: req.body.courseType }
+      );
     }
     res.status(200).send({ success: true });
   } catch (e) {
