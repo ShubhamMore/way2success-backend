@@ -30,7 +30,7 @@ const sendWishes = async () => {
 const birthDayWishes = async () => {
   const now = new Date();
   let milliSecTill7 =
-    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 36, 0, 0) -
+    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 30, 0, 0) -
     now;
   if (milliSecTill7 < 0) {
     milliSecTill7 += 86400000; // it's after 7am, try 7am tomorrow.
