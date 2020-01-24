@@ -32,11 +32,15 @@ const studentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true
   },
-  batch: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
-  },
-  subjects: [mongoose.Schema.Types.ObjectId],
+  batches: [
+    {
+      batch: {
+        type: String,
+        required: true
+      },
+      subjects: [String]
+    }
+  ],
   status: {
     type: String,
     required: true

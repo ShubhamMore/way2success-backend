@@ -52,9 +52,17 @@ router.post('/getStudentsForAttendance', auth, adminAuth, async (req, res) => {
     const students = await Student.find(
       {
         course: req.body.course,
-        batch: req.body.batch,
         $or: [{ status: '0' }, { status: '1' }],
-        subjects: { $all: [{ _id: req.body.subject }] }
+        batches: {
+          $all: [
+            {
+              $elemMatch: {
+                batch: req.body.batch,
+                subjects: { $all: [req.body.subject] }
+              }
+            }
+          ]
+        }
       },
       { _id: 1, name: 1 }
     );

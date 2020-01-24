@@ -6,7 +6,9 @@ const History = require('../models/history.model');
 const User = require('../models/user.model');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/admin-auth');
-const findSubjectNames = require('../functions/findSubjectNames');
+const constructStudentBatches = require('../functions/constructStudentBatches');
+const prepareStudentTotalFees = require('../functions/prepareStudentTotalFees');
+const constructBatchHistory = require('../functions/constructBatchHistory');
 const findBranchName = require('../functions/findBranchName');
 const constructHistory = require('../functions/constructHistory');
 const mongoose = require('mongoose');
@@ -35,8 +37,7 @@ router.post('/newStudent', auth, adminAuth, async (req, res) => {
       branch: req.body.branch,
       courseType: req.body.courseType,
       course: req.body.course,
-      batch: req.body.batch,
-      subjects: req.body.subjects,
+      batches: req.body.batches,
       status: req.body.status
     };
     const student = new Student(newStudent);
@@ -60,7 +61,8 @@ router.post('/newStudent', auth, adminAuth, async (req, res) => {
 
       await sendMail(mail);
     }
-
+    const course = await Course.findById(req.body.course);
+    const batches = await constructBatchHistory(course.batch);
     const newHistory = {
       student: student._id,
       branch: student.branch,
@@ -68,12 +70,7 @@ router.post('/newStudent', auth, adminAuth, async (req, res) => {
         {
           course: student.course,
           courseType: student.courseType,
-          batches: [
-            {
-              batch: student.batch,
-              subjects: student.subjects
-            }
-          ]
+          batches
         }
       ]
     };
@@ -85,7 +82,6 @@ router.post('/newStudent', auth, adminAuth, async (req, res) => {
     };
     res.status(201).send(data);
   } catch (e) {
-    console.log(e);
     let err = '' + e;
     res.status(400).send(err.replace('Error: ', ''));
   }
@@ -99,15 +95,29 @@ router.post('/getStudents', auth, adminAuth, async (req, res) => {
         branch: req.body.branch,
         courseType: req.body.courseType,
         course: req.body.course,
-        batch: req.body.batch,
-        subjects: { $all: [{ _id: req.body.subject }] }
+        batches: {
+          $all: [
+            {
+              $elemMatch: {
+                batch: req.body.batch,
+                subjects: { $all: [req.body.subject] }
+              }
+            }
+          ]
+        }
       };
     } else if (req.body.searchType == '1') {
       searchData = {
         branch: req.body.branch,
         courseType: req.body.courseType,
         course: req.body.course,
-        batch: req.body.batch
+        batches: {
+          $all: [
+            {
+              $elemMatch: { batch: req.body.batch }
+            }
+          ]
+        }
       };
     } else if (req.body.searchType == '2') {
       searchData = {
@@ -151,23 +161,10 @@ router.post('/getStudent', auth, async (req, res) => {
     }
 
     const course = await Course.findById(student.course);
-    const batch = course.batch.find(batch => batch._id.equals(student.batch));
-    const subject = new Array();
-    batch.subjects.find(curSubject => {
-      if (student.subjects.includes(curSubject._id)) {
-        const subObj = {
-          _id: curSubject._id,
-          subject: curSubject.subject
-        };
-        subject.push(subObj);
-      }
-    });
-
     const studentMetaData = {
       branch: await findBranchName(student.branch),
       course: course.courseName,
-      batch: batch.batchName,
-      subject
+      batches: await constructStudentBatches(student.course, student.batches)
     };
 
     res.status(200).send({ student, studentMetaData });
@@ -254,26 +251,18 @@ router.post('/getStudentForPayment', auth, adminAuth, async (req, res) => {
     }
 
     const course = await Course.findById(student.course);
-    const batch = course.batch.find(batch => batch._id.equals(student.batch));
-    const subjects = new Array();
-    let totalFees = 0;
-    batch.subjects.find(curSubject => {
-      if (student.subjects.includes(curSubject._id)) {
-        subjects.push(curSubject.subject);
-        totalFees += parseInt(curSubject.fee);
-      }
-    });
 
     const studentMetaData = {
       branch: await findBranchName(student.branch),
       course: course.courseName,
-      batch: batch.batchName,
-      subjects,
-      totalFees
+      courseType: student.courseType === '0' ? 'Diploma' : 'Degree',
+      batches: await constructStudentBatches(student.course, student.batches),
+      totalFees: await prepareStudentTotalFees(course, student.batches)
     };
 
     res.status(200).send({ student, studentMetaData });
   } catch (e) {
+    console.log(e);
     let err = '' + e;
     if (e.name === 'CastError') {
       err = 'No course Found';
@@ -344,21 +333,16 @@ router.post('/getStudentForEditing', auth, adminAuth, async (req, res) => {
 
 router.post('/getStudentDataForLecture', auth, async (req, res) => {
   try {
-    const student = await Student.findOne(
-      { _id: req.body._id },
-      { _id: 0, course: 1, batch: 1, subjects: 1 }
-    );
+    const student = await Student.findOne({ _id: req.body._id });
 
-    const subjects = await findSubjectNames(
+    const batches = await constructStudentBatches(
       student.course,
-      student.batch,
-      student.subjects
+      student.batches
     );
 
     const studentData = {
       course: student.course,
-      batch: student.batch,
-      subjects: subjects
+      batches
     };
     res.status(200).send(studentData);
   } catch (e) {
@@ -369,21 +353,16 @@ router.post('/getStudentDataForLecture', auth, async (req, res) => {
 
 router.post('/getStudentDataForMedia', auth, async (req, res) => {
   try {
-    const student = await Student.findOne(
-      { _id: req.body._id },
-      { _id: 0, course: 1, batch: 1, subjects: 1 }
-    );
+    const student = await Student.findOne({ _id: req.body._id });
 
-    const subjects = await findSubjectNames(
+    const batches = await constructStudentBatches(
       student.course,
-      student.batch,
-      student.subjects
+      student.batches
     );
 
     const studentData = {
       course: student.course,
-      batch: student.batch,
-      subjects: subjects
+      batches
     };
     res.status(200).send(studentData);
   } catch (e) {
@@ -448,27 +427,13 @@ router.post('/editStudent', auth, adminAuth, async (req, res) => {
       branch: req.body.branch,
       courseType: req.body.courseType,
       course: req.body.course,
-      batch: req.body.batch,
-      subjects: req.body.subjects,
+      batches: req.body.batches,
       status: req.body.status
     };
-
     await Student.findByIdAndUpdate(req.body._id, updatedStudent);
 
     const history = await History.findOne({ student: student._id });
-
-    let len = req.body.subjects.length;
-    let match = 0;
-    for (let i = 0; i < len; i++) {
-      if (student.subjects.includes(req.body.subjects[i])) {
-        match++;
-      }
-    }
-    // console.log(match, len);
-
-    let course = false;
-    let batch = false;
-    let subject = false;
+    const course = await Course.findById(req.body.course);
 
     if (student.course != req.body.course) {
       let match = 0;
@@ -478,88 +443,23 @@ router.post('/editStudent', auth, adminAuth, async (req, res) => {
         }
       });
       if (match == 0) {
+        const batches = await constructBatchHistory(course.batch);
         const newHistory = {
           course: req.body.course,
           courseType: req.body.courseType,
-          batches: [
-            {
-              batch: req.body.batch,
-              subjects: req.body.subjects
-            }
-          ]
+          batches
         };
         history.history.push(newHistory);
-
-        // console.log(history)
-
         await History.findByIdAndUpdate(history._id, history);
-
-        // console.log("batch : " + true)
-        batch = true;
       }
-    } else if (student.batch != req.body.batch) {
-      history.history.forEach(async (curHistory, i) => {
-        let match = 0;
-        curHistory.batches.forEach(batch => {
-          if (req.body.batch.toString() == batch.batch.toString()) {
-            match++;
-          }
-        });
-        if (match == 0) {
-          newBatch = {
-            batch: req.body.batch,
-            subjects: req.body.subjects
-          };
-          history.history[i].batches.push(newBatch);
-
-          // console.log(history)
-
-          await History.findByIdAndUpdate(history._id, history);
-          // console.log("batch : " + true)
-          batch = true;
-        }
-      });
-    } else if (match < len) {
-      history.history.forEach(async (curHistory, i) => {
-        curHistory.batches.forEach(async (curBatch, j) => {
-          // console.log(req.body.batch.toString(), batch.batch.toString())
-          if (req.body.batch.toString() == curBatch.batch.toString()) {
-            let len = req.body.subjects.length;
-            let match = 0;
-            for (let k = 0; k < len; k++) {
-              if (curBatch.subjects.includes(req.body.subjects[k])) {
-                match++;
-              }
-            }
-            // console.log(match, len);
-            if (match < len) {
-              try {
-                const newSubjects = new Array();
-                for (let k = 0; k < len; k++) {
-                  if (!curBatch.subjects.includes(req.body.subjects[k])) {
-                    newSubjects.push(req.body.subjects[k]);
-                  }
-                }
-
-                newSubjects.forEach(subject => {
-                  history.history[i].batches[j].subjects.push(subject);
-                });
-
-                // console.log(history)
-
-                await History.findByIdAndUpdate(history._id, history);
-                // console.log("subject : " + true)
-                subject = true;
-              } catch (e) {
-                // console.log(''+e)
-              }
-            }
-          }
-        });
-      });
+    } else if (req.body.batches.length < course.batch.length) {
+      const br = history.history.findIndex(
+        history => req.body.course.toString() === history.course.toString()
+      );
+      const batches = await constructBatchHistory(course.batch);
+      history.history[br].batches = batches;
+      await History.findByIdAndUpdate(history._id, history);
     }
-
-    // console.log("course " + course, "batch " + batch, "subject " + subject)
 
     res.status(200).send({ succes: true });
   } catch (e) {

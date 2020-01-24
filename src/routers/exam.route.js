@@ -34,9 +34,17 @@ router.post('/getStudentsForExam', auth, adminAuth, async (req, res) => {
     // SELECT ALL FROM STUDENTS WHERE COURSE = req.body.course AND BATCH = req.body.batch AND (STATUS = "0" OR STATUS = "1") AND STUDENT.SUBJECTS.includes(req.body.subject)
     const students = await Student.find({
       course: req.body.course,
-      batch: req.body.batch,
       $or: [{ status: '0' }, { status: '1' }],
-      subjects: { $all: [{ _id: req.body.subject }] }
+      batches: {
+        $all: [
+          {
+            $elemMatch: {
+              batch: req.body.batch,
+              subjects: { $all: [req.body.subject] }
+            }
+          }
+        ]
+      }
     });
 
     if (!students) {

@@ -56,12 +56,11 @@ router.post('/getReceipt', auth, async (req, res, next) => {
     const receipt = await Receipt.findById(req.body._id);
     const student = await Student.findById(receipt.student);
     const course = await Course.findById(receipt.course);
-    const batch = course.batch.find(curBatch => curBatch._id == receipt.batch);
 
     receipt.branch = await findBranchName(receipt.branch);
     receipt.student = student.name;
     receipt.course = course.courseName;
-    receipt.batch = batch.batchName;
+    receipt.courseType = receipt.courseType === '0' ? 'Diploma' : 'Degree';
 
     res.status(200).send(receipt);
   } catch (e) {

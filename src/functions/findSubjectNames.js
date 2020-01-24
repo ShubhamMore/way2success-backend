@@ -1,13 +1,13 @@
 const Course = require('../models/course.model');
 
 const findSubjectNames = async (course, batch, subjects) => {
-  const thiscourse = await Course.findOne(
+  const thisCourse = await Course.findOne(
     { _id: course },
     { _id: 0, batch: 1 }
   );
   let subject = new Array();
 
-  thiscourse.batch.forEach(curBatch => {
+  thisCourse.batch.forEach(curBatch => {
     if (curBatch._id.toString() == batch.toString()) {
       subject = curBatch.subjects;
       return;

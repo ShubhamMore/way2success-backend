@@ -12,7 +12,7 @@ const receiptSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  batch: {
+  courseType: {
     type: String,
     required: true
   },
